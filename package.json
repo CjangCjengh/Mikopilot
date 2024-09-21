@@ -1,0 +1,83 @@
+{
+  "name": "mikopilot",
+  "displayName": "Mikopilot",
+  "icon": "icon.png",
+  "description": "Translation assistance tool based on SakuraLLM",
+  "version": "0.0.1",
+  "publisher": "cjangcjengh",
+  "repository": "https://github.com/CjangCjengh/Mikopilot",
+  "engines": {
+    "vscode": "^1.93.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "cjangcjengh.mikopilot",
+        "title": "Mikopilot"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Mikopilot",
+      "properties": {
+        "mikopilot.newlineEscape": {
+          "type": "string",
+          "default": "\\n",
+          "description": "The escape string to use for newline characters."
+        },
+        "mikopilot.apiUrl": {
+          "type": "string",
+          "default": "http://0.0.0.0:5000/v1/chat/completions",
+          "description": "The URL of the API to use for translation."
+        },
+        "mikopilot.maxNewTokens": {
+          "type": "integer",
+          "default": 100,
+          "description": "The maximum number of new tokens to generate in the translation output."
+        },
+        "mikopilot.contextLinesAbove": {
+          "type": "integer",
+          "default": 3,
+          "description": "The number of lines above the current line to include in the translation context."
+        },
+        "mikopilot.contextLinesBelow": {
+          "type": "integer",
+          "default": 3,
+          "description": "The number of lines below the current line to include in the translation context."
+        },
+        "mikopilot.translationTemplate": {
+          "type": "string",
+          "default": "<|im_start|>system\n你是一个轻小说翻译模型，可以流畅通顺地以日本轻小说的风格将日文翻译成简体中文，并联系上下文正确使用人称代词，不擅自添加原文中没有的代词。<|im_end|>\n<|im_start|>user\n将下面的日文文本翻译成中文：{original}<|im_end|>\n<|im_start|>assistant\n{translation}",
+          "description": "The template to use for the translation prompt, with placeholders for original and translation text."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.7",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.93.0",
+    "@typescript-eslint/eslint-plugin": "^8.3.0",
+    "@typescript-eslint/parser": "^8.3.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "eslint": "^9.9.1",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "axios": "^1.7.7"
+  }
+}
