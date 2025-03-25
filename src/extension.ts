@@ -124,7 +124,7 @@ async function handleTranslation(original: string[], translation: string[], curs
     let stopStream = false;
     try {
         const response = await axios.post(apiUrl, {
-            model_name: modelName,
+            model: modelName,
             prompt: prompt,
             max_new_tokens: maxNewTokens,
             stream: true
