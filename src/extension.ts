@@ -8,6 +8,7 @@ export function activate(context: vscode.ExtensionContext) {
         const newlineEscape = config.get<string>('newlineEscape', '\\n');
         const escapedNewlineEscape = newlineEscape.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const apiUrl = config.get<string>('apiUrl', 'http://0.0.0.0:5000/v1/chat/completions');
+        const modelName = config.get<string>('modelName', '');
         const maxNewTokens = config.get<number>('maxNewTokens', 100);
         const contextLinesAbove = config.get<number>('contextLinesAbove', 3);
         const contextLinesBelow = config.get<number>('contextLinesBelow', 3);
@@ -85,7 +86,7 @@ export function activate(context: vscode.ExtensionContext) {
                     break;
                 case 'translate': {
                     const { original, translation, cursorPosition } = message.data;
-                    handleTranslation(original, translation, cursorPosition, apiUrl, maxNewTokens, contextLinesAbove, contextLinesBelow, translationTemplate, panel.webview);
+                    handleTranslation(original, translation, cursorPosition, apiUrl, modelName, maxNewTokens, contextLinesAbove, contextLinesBelow, translationTemplate, panel.webview);
                     break;
                 }
             }
@@ -102,7 +103,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(disposable);
 }
 
-async function handleTranslation(original: string[], translation: string[], cursorPosition: number, apiUrl: string, maxNewTokens: number, contextLinesAbove: number, contextLinesBelow: number, translationTemplate: string, webview: vscode.Webview) {
+async function handleTranslation(original: string[], translation: string[], cursorPosition: number, apiUrl: string, modelName: string, maxNewTokens: number, contextLinesAbove: number, contextLinesBelow: number, translationTemplate: string, webview: vscode.Webview) {
     for (let i = cursorPosition - 1; i >= Math.max(0, cursorPosition - contextLinesAbove); i--) {
         if (translation[i].trim() === '' || original[i].trim() === '') {
             contextLinesAbove = cursorPosition - i - 1
@@ -123,6 +124,7 @@ async function handleTranslation(original: string[], translation: string[], curs
     let stopStream = false;
     try {
         const response = await axios.post(apiUrl, {
+            model_name: modelName,
             prompt: prompt,
             max_new_tokens: maxNewTokens,
             stream: true
